@@ -4,7 +4,7 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 from tkinter import filedialog, scrolledtext
 import tkinter.font as tkFont
-import threading, re
+import threading, re, openpyxl
 from search import run as search_run
 
 
@@ -60,10 +60,22 @@ class TextSearchGUI:
         ttk.Combobox(
             root,
             textvariable=self.ext_var,
-            values=["", ".txt", ".log", ".csv", ".py"],
+            values=["",".csv",".docx",".log",".pdf",".txt",".xlsx"],
             width=10,
             bootstyle="dark"
         ).grid(row=3, column=1, padx=10, pady=5, sticky="w")
+
+        # --- PDF Type Selection ---
+        # ttk.Label(root, text="PDF Type:").grid(row=5, column=0, padx=10, pady=5, sticky="w")
+        # self.pdf_mode = ttk.StringVar(value="text")
+        # ttk.Combobox(
+        #     root,
+        #     textvariable=self.pdf_mode,
+        #     values=["text", "scanned"],
+        #     width=10,
+        #     bootstyle="dark"
+        # ).grid(row=5, column=1, padx=10, pady=5, sticky="w")
+
 
         # --- Search Button ---
         ttk.Button(
@@ -145,6 +157,7 @@ class TextSearchGUI:
         """Perform search and show aligned, colorized output with match counts."""
         regex = re.compile(pattern, re.IGNORECASE)
         results = search_run(pattern, target, ignore_case=True, extension=ext)
+        # results = search_run(pattern, target, ignore_case=True, extension=ext, pdf_mode=self.pdf_mode.get())
 
         found_lines = 0
         total_matches = 0
