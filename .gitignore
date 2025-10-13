@@ -1,2 +1,10 @@
+# Ignore __pycache__
+__pycache__/
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+
 # Specific Ignore
 png_to_ico.py
+image.png
