@@ -10,7 +10,17 @@
 
 ---
 
-## Purpose
+## Contents
+
+- [About](#-purpose)
+- [Getting Started](#-getting-started)
+- [Features](#-features)
+- [Future Enhancements](#-future-enhancements)
+- [Future Improvements (Full Roadmap)](TODO.md)
+
+---
+
+## About
 
 This project began from a need for a better way to search through multiple types of documents for specific error messages.  
 Given the constraints of managed corporate devices, traditional tools such as **grep**, **awk**, or **sed** were unavailable — as Linux subsystems and virtual machines were not permitted under company policy.
@@ -41,13 +51,27 @@ Right now, Parsely can be launched by running `py run.py` from within the root d
 
 ---
 
+## Features
+
+- **Multi-format search support** – Find text in `.txt`, `.csv`, `.log`, `.pdf`, `.docx`, and `.xlsx` files.
+- **Dual-term search** – Compare or search for two keywords side-by-side, with color-coded results.
+- **Modern GUI** – Built with `ttkbootstrap` for a clean, responsive interface and dark theme.
+- **Match counts and highlights** – See total occurrences, line numbers, and highlighted matches instantly.
+- **No admin rights required** – Runs in a self-contained environment created by `run.py`.
+- **Auto dependency setup** – Automatically installs required Python libraries if missing.
+- **Lightweight and portable** – Runs directly from any folder without installation.
+- **Splash screen with logo** – Branded loading experience on startup.
+- **Simple path selection** – Browse to files via GUI, no typing required.
+- **Expandable architecture** – Modular design for adding new file types or search logic easily.
+
+---
+
 ## Future Enhancements
 
 Some of the improvements and features that are planned for future versions of **Parsely**:
 
 - [ ] **Package the application into a standalone executable using PyInstaller**
 - [ ] Add drag-and-drop file support
-- [ ] Add cross-platform builds (Windows `.exe`, macOS `.app`)
 - [ ] Implement user preferences for theme and search behavior
 - [ ] Implement a settings panel for default themes and filters
 - [ ] Add file-type icons and visual status indicators
