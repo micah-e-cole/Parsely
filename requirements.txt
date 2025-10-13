@@ -3,6 +3,4 @@ typer
 openpyxl
 python-docx
 pdfplumber
-pytesseract
-pdf2image
 pillow

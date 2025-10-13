@@ -2,8 +2,6 @@
 import re
 from pathlib import Path
 import openpyxl
-from pdf2image import convert_from_path
-import pytesseract
 import pdfplumber           # preferred over PyPDF2
 import docx                 # from python-docx
 
@@ -43,17 +41,11 @@ def _search_file(file_path, regex, pdf_mode="text"):
     """
     Helper that yields matches from a single file.
     Detects .xlsx files and uses openpyxl to inspect cell values.
-    Issues: Tesserect needs to be installed on Windows - no support for this right now
     """
     suffix = file_path.suffix.lower()
 
     if suffix == ".xlsx":
         yield from _search_excel(file_path, regex)
-    # elif suffix == ".pdf":
-    #     if pdf_mode == "scanned":
-    #        yield from _search_pdf_ocr(file_path, regex)
-    #     else:
-    #        yield from _search_pdf(file_path, regex)
     elif suffix == ".pdf":
         yield from _search_pdf(file_path, regex)
     elif suffix == ".docx":
@@ -112,25 +104,6 @@ def _search_pdf(file_path, regex):
                     yield f"Page {page_num}: {snippet.strip()}"
     except Exception as e:
         yield f"Error reading {file_path}: {e}"
-
-
-# -------------------------
-# PDF file search, For scanned documents, uses OCR
-# -------------------------
-def _search_pdf_ocr(file_path, regex):
-    """Perform OCR on each PDF page and search text."""
-    try:
-        images = convert_from_path(file_path)
-        for page_num, img in enumerate(images, start=1):
-            text = pytesseract.image_to_string(img)
-            text = re.sub(r"\s+", " ", text)
-            for match in regex.finditer(text):
-                start = max(0, match.start() - 40)
-                end = match.end() + 40
-                snippet = text[start:end]
-                yield f"Page {page_num} (OCR): {snippet.strip()}"
-    except Exception as e:
-        yield f"Error processing OCR for {file_path}: {e}"
 
 
 # -------------------------
