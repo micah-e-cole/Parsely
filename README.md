@@ -1,6 +1,6 @@
 # Parsely
 
-![Parsely Logo] (main/assets/parsely.png)
+![Parsely Logo](main/assets/parsely.png)
 
 ## Purpose
 
