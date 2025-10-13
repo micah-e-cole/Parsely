@@ -36,4 +36,20 @@ Right now, Parsely can be launched by running `py run.py` from within the root d
 |-- run.py
 |-- requirements.txt
 |-- README.md
-|-- launch_textsearch.bat```
+|-- launch_textsearch.bat
+```
+
+---
+
+## Future Enhancements
+
+Some of the improvements and features that are planned for future versions of **Parsely**:
+
+- [ ] **Package the application into a standalone executable using PyInstaller**
+- [ ] Add drag-and-drop file support
+- [ ] Add cross-platform builds (Windows `.exe`, macOS `.app`)
+- [ ] Implement user preferences for theme and search behavior
+- [ ] Implement a settings panel for default themes and filters
+- [ ] Add file-type icons and visual status indicators
+- [ ] Improve PDF scanning accuracy with OCR fallback (tesserect required and at least for Windows environments there is no way to implement this without admin rights to download.)
+- [ ] Export search results tp CSV, JSON, etc.
