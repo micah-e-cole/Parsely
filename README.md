@@ -1,6 +1,14 @@
-# Parsely
+<p align="center">
+  <img src="main/assets/parsely.png" alt="Parsely Logo" width="160">
+</p>
 
-![Parsely Logo](main/assets/parsely.png)
+<h1 align="center">Parsely</h1>
+
+<p align="center">
+  <em>A fast, intuitive text-search utility built with Python and ttkbootstrap.</em>
+</p>
+
+---
 
 ## Purpose
 
