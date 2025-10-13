@@ -30,7 +30,7 @@ class TextSearchGUI:
             row=0, column=0, padx=10, pady=10, sticky="w"
         )
         self.search_var1 = ttk.StringVar()
-        self.entry_pattern1 = ttk.Entry(root, textvariable=self.search_var1, width=40)
+        self.entry_pattern1 = ttk.Entry(root, textvariable=self.search_var1, width=20)
         self.entry_pattern1.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
         # --- Search Term 2 (optional) ---
@@ -38,7 +38,7 @@ class TextSearchGUI:
             row=1, column=0, padx=10, pady=10, sticky="w"
         )
         self.search_var2 = ttk.StringVar()
-        self.entry_pattern2 = ttk.Entry(root, textvariable=self.search_var2, width=40)
+        self.entry_pattern2 = ttk.Entry(root, textvariable=self.search_var2, width=20)
         self.entry_pattern2.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
         # --- Path Selection ---
@@ -46,7 +46,7 @@ class TextSearchGUI:
             row=2, column=0, padx=10, pady=10, sticky="w"
         )
         self.path_var = ttk.StringVar()
-        self.entry_path = ttk.Entry(root, textvariable=self.path_var, width=60)
+        self.entry_path = ttk.Entry(root, textvariable=self.path_var, width=40)
         self.entry_path.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
         ttk.Button(root, text="Browse", command=self.browse_path, bootstyle="info-outline").grid(
             row=2, column=2, padx=5, pady=10, sticky="e"
@@ -65,17 +65,6 @@ class TextSearchGUI:
             bootstyle="dark"
         ).grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
-        # --- PDF Type Selection ---
-        # ttk.Label(root, text="PDF Type:").grid(row=5, column=0, padx=10, pady=5, sticky="w")
-        # self.pdf_mode = ttk.StringVar(value="text")
-        # ttk.Combobox(
-        #     root,
-        #     textvariable=self.pdf_mode,
-        #     values=["text", "scanned"],
-        #     width=10,
-        #     bootstyle="dark"
-        # ).grid(row=5, column=1, padx=10, pady=5, sticky="w")
-
 
         # --- Search Button ---
         ttk.Button(
@@ -83,7 +72,7 @@ class TextSearchGUI:
             text="Search",
             command=self.run_search,
             bootstyle="success-outline"
-        ).grid(row=4, column=1, pady=15)
+        ).grid(row=0, column=2, padx=10, pady=(10,0), sticky="e")
 
         # --- Output Frames for Each Search ---
         frame_output = ttk.Frame(root, padding=10, bootstyle="dark")

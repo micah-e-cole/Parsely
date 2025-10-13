@@ -1,0 +1,10 @@
+parsely/
+|-- main/
+    |-- gui.pyw
+    |-- search.py
+    |-- cli.py
+    |-- splash.py
+    |-- utils.py (empty)
+run.py
+requirements.txt
+README.md
