@@ -1,7 +1,7 @@
 import typer
 from search import run  # ✅ Make sure this matches your actual filename (search.py)
 
-app = typer.Typer(help="TextSearch: Search and filter text across files and directories")
+app = typer.Typer(help="Parsely: Search and filter text across files and directories")
 
 @app.command()
 def find(

@@ -12,7 +12,7 @@ import venv
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VENV_DIR = os.path.join(BASE_DIR, ".venv")
 PYTHON_EXE = os.path.join(VENV_DIR, "Scripts", "python.exe") if os.name == "nt" else os.path.join(VENV_DIR, "bin", "python")
-GUI_SCRIPT = os.path.join(BASE_DIR, "textsearch\gui.pyw")
+GUI_SCRIPT = os.path.join(BASE_DIR, "main\gui.pyw")
 
 # --- Step 1: Create virtual environment if missing ---
 if not os.path.exists(VENV_DIR):

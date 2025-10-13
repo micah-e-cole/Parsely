@@ -8,3 +8,4 @@ __pycache__/
 # Specific Ignore
 png_to_ico.py
 image.png
+pyproject.toml

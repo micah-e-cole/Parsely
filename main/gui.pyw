@@ -11,7 +11,7 @@ from search import run as search_run
 class TextSearchGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("TextSearch")
+        self.root.title("Parsely")
         self.root.geometry("1000x650")
         self.root.minsize(850, 450)
         self.root.resizable(True, True)
