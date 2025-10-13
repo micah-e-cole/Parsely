@@ -1,4 +1,5 @@
-# Ignore __pycache__
+# Ignore directories
+.venv/
 __pycache__/
 
 # Ignore compiled Python files
