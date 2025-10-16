@@ -1,6 +1,7 @@
 # Ignore directories
 .venv/
 __pycache__/
+Archive/
 
 # Ignore compiled Python files
 *.pyc
