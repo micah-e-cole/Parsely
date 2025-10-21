@@ -1,6 +1,5 @@
 # gui.pyw
 import ttkbootstrap as ttk
-ttk.Style().theme_use('darkly')
 from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 from tkinter import filedialog, scrolledtext

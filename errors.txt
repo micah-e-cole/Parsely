@@ -1,0 +1,32 @@
+Splash] Loading image from: /Users/micahbraun/Desktop/Projects/Programming/Python/Automation/Parsely/dist/Parsely.app/Contents/Frameworks/main/assets/parsely.png
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter/__init__.py", line 2082, in __call__
+  File "tkinter/__init__.py", line 876, in callit
+  File "main/splash.py", line 77, in <lambda>
+    app.after(int(duration * 1000), lambda: (app.destroy(), callback()))
+                                                            ~~~~~~~~^^
+  File "main/gui.py", line 190, in launch_gui
+    app = ttk.Window(themename="darkly")
+    ^^^^^^^^^^^^^^^^^^
+  File "main/gui.py", line 21, in __init__
+    style = ttk.Style(theme='darkly')
+    ^^^^^^^^^^^^^^^
+AttributeError: property 'style' of 'Window' object has no setter
+can't invoke "winfo" command: application has been destroyed
+    while executing
+"winfo exists $pb"
+    (procedure "ttk::progressbar::Autoincrement" line 4)
+    invoked from within
+"ttk::progressbar::Autoincrement .!progressbar 10 1"
+    ("after" script)
+invalid command name "4514052928check_done"
+    while executing
+"4514052928check_done"
+    ("after" script)
+can't invoke "event" command: application has been destroyed
+    while executing
+"event generate $w <<ThemeChanged>>"
+    (procedure "ttk::ThemeChanged" line 6)
+    invoked from within
+"ttk::ThemeChanged"
