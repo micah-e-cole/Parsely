@@ -71,10 +71,10 @@ def show_splash_then(callback, wait_thread=None, duration=30):
             app.destroy()
             callback()
         else:
-            app.after(500, check_done)
+            app.after(100, check_done)
 
     # Safety timeout in case of setup hang
     app.after(int(duration * 1000), lambda: (app.destroy(), callback()))
-    app.after(500, check_done)
+    app.after(100, check_done)
 
     app.mainloop()

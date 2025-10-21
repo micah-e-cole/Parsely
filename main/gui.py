@@ -1,11 +1,12 @@
 # gui.pyw
 import ttkbootstrap as ttk
+ttk.Style().theme_use('darkly')
 from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 from tkinter import filedialog, scrolledtext
 import tkinter.font as tkFont
 import threading, re, openpyxl
-from search import run as search_run
+from main.search import run as search_run
 
 
 class TextSearchGUI:
@@ -15,6 +16,10 @@ class TextSearchGUI:
         self.root.geometry("1000x650")
         self.root.minsize(850, 450)
         self.root.resizable(True, True)
+
+        # Force ttkbootstrap to apply its styles correctly on macOS
+        style = ttk.Style(theme='darkly')
+        self.root.style = style
 
         # Configure overall theme colors and font
         self.font_base = tkFont.Font(family="Segoe UI", size=10)
@@ -48,7 +53,7 @@ class TextSearchGUI:
         self.path_var = ttk.StringVar()
         self.entry_path = ttk.Entry(root, textvariable=self.path_var, width=40)
         self.entry_path.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
-        ttk.Button(root, text="Browse", command=self.browse_path, bootstyle="info-outline").grid(
+        ttk.Button(root, text="Browse", command=self.browse_path, bootstyle="info").grid(
             row=2, column=2, padx=5, pady=10, sticky="e"
         )
 
@@ -71,7 +76,7 @@ class TextSearchGUI:
             root,
             text="Search",
             command=self.run_search,
-            bootstyle="success-outline"
+            bootstyle="success"
         ).grid(row=0, column=2, padx=10, pady=(10,0), sticky="e")
 
         # --- Output Frames for Each Search ---
