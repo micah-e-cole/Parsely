@@ -91,17 +91,26 @@ def _search_excel(file_path, regex):
 # PDF file search: Optimal, uses pdfplumber
 # -------------------------
 def _search_pdf(file_path, regex):
-    """Accurate PDF search using pdfplumber."""
+    """Extract full sentence containing the match (PDF version)."""
     try:
         with pdfplumber.open(file_path) as pdf:
             for page_num, page in enumerate(pdf.pages, start=1):
                 text = page.extract_text() or ""
                 text = re.sub(r"\s+", " ", text)
+
                 for match in regex.finditer(text):
-                    start = max(0, match.start() - 40)
-                    end = match.end() + 40
-                    snippet = text[start:end]
-                    yield f"Page {page_num}: {snippet.strip()}"
+                    m_start, m_end = match.span()
+
+                    # Start extraction at the match
+                    sentence = text[m_start:]
+
+                    # Stop at the first period AFTER the match
+                    period_index = sentence.find(".")
+                    if period_index != -1:
+                        sentence = sentence[:period_index + 1]
+
+                    yield f"Page {page_num}: {sentence.strip()}"
+
     except Exception as e:
         yield f"Error reading {file_path}: {e}"
 

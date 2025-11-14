@@ -1,4 +1,3 @@
-# gui.pyw
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
@@ -24,9 +23,9 @@ class TextSearchGUI:
         self.font_base = tkFont.Font(family="Segoe UI", size=10)
 
         # Grid layout setup
-        for i in range(7):
+        for i in range(8):
             self.root.rowconfigure(i, weight=0)
-        self.root.rowconfigure(6, weight=1)
+        self.root.rowconfigure(7, weight=1)
         self.root.columnconfigure(1, weight=1)
 
         # --- Search Term 1 (required) ---
@@ -45,53 +44,83 @@ class TextSearchGUI:
         self.entry_pattern2 = ttk.Entry(root, textvariable=self.search_var2, width=20)
         self.entry_pattern2.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
-        # --- Path Selection ---
+        # --- Target Type (File or Folder) ---
+        ttk.Label(root, text="Search Target *:", font=self.font_base).grid(
+            row=2, column=0, padx=10, pady=(10, 5), sticky="w"
+        )
+        self.target_type = ttk.StringVar(value="file")
+        frame_target = ttk.Frame(root)
+        frame_target.grid(row=2, column=1, padx=10, pady=(10, 5), sticky="w")
+
+        ttk.Radiobutton(
+            frame_target,
+            text="File",
+            variable=self.target_type,
+            value="file",
+            bootstyle="secondary",
+            command=self.update_filter_visibility
+        ).pack(side="left", padx=(0, 10))
+
+        ttk.Radiobutton(
+            frame_target,
+            text="Folder",
+            variable=self.target_type,
+            value="folder",
+            bootstyle="secondary",
+            command=self.update_filter_visibility
+        ).pack(side="left")
+
+        # --- Path Selection (always visible) ---
         ttk.Label(root, text="Path *:", font=self.font_base).grid(
-            row=2, column=0, padx=10, pady=10, sticky="w"
+            row=3, column=0, padx=10, pady=5, sticky="w"
         )
         self.path_var = ttk.StringVar()
         self.entry_path = ttk.Entry(root, textvariable=self.path_var, width=40)
-        self.entry_path.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
-        ttk.Button(root, text="Browse", command=self.browse_path, bootstyle="info").grid(
-            row=2, column=2, padx=5, pady=10, sticky="e"
-        )
+        self.entry_path.grid(row=3, column=1, padx=10, pady=5, sticky="ew")
 
-        # --- Extension Filter ---
-        ttk.Label(root, text="Extension Filter:", font=self.font_base).grid(
-            row=3, column=0, padx=10, pady=5, sticky="w"
-        )
+        ttk.Button(
+            root, text="Browse", command=self.browse_path, bootstyle="info-outline"
+        ).grid(row=3, column=2, padx=5, pady=5, sticky="e")
+
+        # --- Extension Filter (only for File) ---
+        self.ext_label = ttk.Label(root, text="Extension Filter:", font=self.font_base)
         self.ext_var = ttk.StringVar()
-        ttk.Combobox(
+        self.ext_combo = ttk.Combobox(
             root,
             textvariable=self.ext_var,
-            values=["",".csv",".docx",".log",".pdf",".txt",".xlsx"],
+            values=["", ".csv", ".docx", ".log", ".pdf", ".txt", ".xlsx"],
             width=10,
             bootstyle="dark"
-        ).grid(row=3, column=1, padx=10, pady=5, sticky="w")
-
+        )
+        self.ext_label.grid(row=4, column=0, padx=10, pady=5, sticky="w")
+        self.ext_combo.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
         # --- Search Button ---
         ttk.Button(
             root,
             text="Search",
             command=self.run_search,
-            bootstyle="success"
-        ).grid(row=0, column=2, padx=10, pady=(10,0), sticky="e")
+            bootstyle="success-outline"
+        ).grid(row=0, column=2, padx=10, pady=(10, 0), sticky="e")
 
         # --- Output Frames for Each Search ---
         frame_output = ttk.Frame(root, padding=10, bootstyle="dark")
-        frame_output.grid(row=6, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
+        frame_output.grid(row=7, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
 
         frame_output.columnconfigure(0, weight=1)
         frame_output.columnconfigure(1, weight=1)
         frame_output.rowconfigure(0, weight=1)
 
         # Output box for term 1
-        self.output1 = scrolledtext.ScrolledText(frame_output, wrap="word", bg="#101010", fg="#e8e8e8", insertbackground="white")
+        self.output1 = scrolledtext.ScrolledText(
+            frame_output, wrap="word", bg="#101010", fg="#e8e8e8", insertbackground="white"
+        )
         self.output1.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         # Output box for term 2 (optional)
-        self.output2 = scrolledtext.ScrolledText(frame_output, wrap="word", bg="#101010", fg="#e8e8e8", insertbackground="white")
+        self.output2 = scrolledtext.ScrolledText(
+            frame_output, wrap="word", bg="#101010", fg="#e8e8e8", insertbackground="white"
+        )
         self.output2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         # --- Tag styles for highlighting ---
@@ -102,13 +131,29 @@ class TextSearchGUI:
             output.tag_configure("linenum", foreground="#FFA500")
             output.tag_configure("info", foreground="#DDDDDD")
 
+        # Initialize visibility state
+        self.update_filter_visibility()
+
     # -------------------------------
     #  Utility Methods
     # -------------------------------
 
+    def update_filter_visibility(self):
+        """Show Extension Filter only when 'File' is selected."""
+        if self.target_type.get() == "file":
+            self.ext_label.grid()
+            self.ext_combo.grid()
+        else:
+            self.ext_label.grid_remove()
+            self.ext_combo.grid_remove()
+
     def browse_path(self):
-        """Open file picker."""
-        chosen = filedialog.askopenfilename(title="Select a file")
+        """Open a file or folder picker depending on user selection."""
+        if self.target_type.get() == "folder":
+            chosen = filedialog.askdirectory(title="Select a folder to search")
+        else:
+            chosen = filedialog.askopenfilename(title="Select a file to search")
+
         if chosen:
             self.path_var.set(chosen)
 
@@ -124,7 +169,7 @@ class TextSearchGUI:
             Messagebox.show_warning("Please enter at least the first search term.", "Input Error")
             return
         if not target:
-            Messagebox.show_warning("Please select a file.", "Input Error")
+            Messagebox.show_warning("Please select a file or folder.", "Input Error")
             return
 
         # Clear previous results
@@ -150,7 +195,6 @@ class TextSearchGUI:
         """Perform search and show aligned, colorized output with match counts."""
         regex = re.compile(pattern, re.IGNORECASE)
         results = search_run(pattern, target, ignore_case=True, extension=ext)
-        # results = search_run(pattern, target, ignore_case=True, extension=ext, pdf_mode=self.pdf_mode.get())
 
         found_lines = 0
         total_matches = 0
@@ -162,20 +206,41 @@ class TextSearchGUI:
             except ValueError:
                 line_number, line_rest = "?", result
 
-            matches = list(regex.finditer(line_rest))
-            if matches:
-                found_lines += 1
-                output_widget.insert("end", f"[{index:03}] (line {line_number:>4})  ", "linenum")
+        matches = list(regex.finditer(line_rest))
+        if matches:
+            found_lines += 1
 
-                start_idx = 0
-                for match in matches:
-                    mstart, mend = match.span()
-                    output_widget.insert("end", line_rest[start_idx:mstart])
-                    output_widget.insert("end", line_rest[mstart:mend], "match")
-                    start_idx = mend
-                    total_matches += 1
-                output_widget.insert("end", line_rest[start_idx:] + "\n")
-                index += 1
+            # Always use the FIRST match in the line
+            m = matches[0]
+            start, end = m.span()
+
+            # Slice from the match start
+            extracted = line_rest[start:]
+
+            # Stop at the first period AFTER the match
+            period_index = extracted.find(".")
+            if period_index != -1:
+                extracted = extracted[:period_index + 1]
+
+            # Insert line header (still showing match index + line number)
+            output_widget.insert("end", f"[{index:03}] (line {line_number:>4})  ", "linenum")
+
+            # Show the extracted substring with highlight on the match
+            # Recalculate match position within 'extracted'
+            local_match_start = 0
+            local_match_end = end - start
+
+            # Insert text up to match
+            output_widget.insert("end", extracted[:local_match_start])
+
+            # Insert highlighted match
+            output_widget.insert("end", extracted[local_match_start:local_match_end], "match")
+
+            # Insert remainder
+            output_widget.insert("end", extracted[local_match_end:] + "\n")
+
+            total_matches += 1
+            index += 1
 
         if total_matches == 0:
             output_widget.insert("end", "\nNo matches found.\n", "info")
