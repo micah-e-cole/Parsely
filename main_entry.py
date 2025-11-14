@@ -1,7 +1,3 @@
-"""
-main_entry.py — PyInstaller entry point for Parsely
-"""
-
 from main.gui import launch_gui
 from main.splash import show_splash_then
 

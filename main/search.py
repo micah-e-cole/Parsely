@@ -2,46 +2,54 @@
 import re
 from pathlib import Path
 import openpyxl
-import pdfplumber           # preferred over PyPDF2
-import docx                 # from python-docx
+import pdfplumber
+import docx
 
 
 def run(pattern, target, ignore_case=True, extension="", pdf_mode="text"):
     """
-    Generator that yields lines or cells matching pattern in a file or directory.
-    Compatible with both CLI and GUI frontends.
-    Supports plain text files, PDF (.pdf) files, and Excel (.xlsx) spreadsheets.
+    Generator yielding lines or cells matching pattern in a file or directory.
+    Supports plain text, PDF, DOCX, and Excel (.xlsx).
+    Used by both CLI and GUI.
     """
+
+    # Normalize flags and paths (cross-OS safe)
     flags = re.IGNORECASE if ignore_case else 0
     regex = re.compile(pattern, flags)
-    path = Path(target)
+
+    # Expand "~" and resolve any relative path (macOS-safe)
+    path = Path(target).expanduser().resolve()
 
     if not path.exists():
         yield f"Error: {target} does not exist."
         return
 
+    # Normalize extension
     if extension and not extension.startswith("."):
         extension = "." + extension
 
-    # If target is a single file
+    # FILE SEARCH
     if path.is_file():
         yield from _search_file(path, regex, pdf_mode)
+        return
 
-    # If target is a directory
-    elif path.is_dir():
-        for file in path.rglob(f"*{extension}" if extension else "*"):
-            if file.is_file():
-                yield from _search_file(file, regex, pdf_mode)
-    else:
-        yield f"Error: {target} is not a file or directory."
+    # DIRECTORY SEARCH (NAME MATCH ONLY)
+    if path.is_dir():
 
+        # Search both files and subfolders by *name only*
+        for item in path.rglob("*"):
+            if regex.search(item.name):
+                # Return relative path from the searched folder
+                rel = item.relative_to(path)
+                yield str(rel)
+
+        return
+
+    yield f"Error: {target} is not a file or directory."
 
 
 def _search_file(file_path, regex, pdf_mode="text"):
-    """
-    Helper that yields matches from a single file.
-    Detects .xlsx files and uses openpyxl to inspect cell values.
-    """
+    """Call correct search backend depending on file suffix."""
     suffix = file_path.suffix.lower()
 
     if suffix == ".xlsx":
@@ -54,11 +62,10 @@ def _search_file(file_path, regex, pdf_mode="text"):
         yield from _search_text(file_path, regex)
 
 
-# -------------------------
-# Text file search
-# -------------------------
+# ----------------------------------
+# TEXT FILE SEARCH
+# ----------------------------------
 def _search_text(file_path, regex):
-    """Yield matching lines from a text-based file."""
     try:
         with open(file_path, encoding="utf-8", errors="ignore") as f:
             for i, line in enumerate(f, start=1):
@@ -68,11 +75,10 @@ def _search_text(file_path, regex):
         yield f"Error reading {file_path}: {e}"
 
 
-# -------------------------
-# Excel file search
-# -------------------------
+# ----------------------------------
+# EXCEL SEARCH
+# ----------------------------------
 def _search_excel(file_path, regex):
-    """Yield matching cells from an Excel (.xlsx) workbook."""
     try:
         wb = openpyxl.load_workbook(file_path, data_only=True, read_only=True)
         for sheet in wb.sheetnames:
@@ -84,56 +90,59 @@ def _search_excel(file_path, regex):
                         yield f"Sheet: {sheet} | Cell {cell_ref} | {cell}"
         wb.close()
     except Exception as e:
-        yield f"Error reading {file_path}: {e}"
+        yield f"Error reading Excel file {file_path}: {e}"
 
 
-# -------------------------
-# PDF file search: Optimal, uses pdfplumber
-# -------------------------
+# ----------------------------------
+# PDF SEARCH
+# ----------------------------------
 def _search_pdf(file_path, regex):
-    """Extract full sentence containing the match (PDF version)."""
     try:
         with pdfplumber.open(file_path) as pdf:
             for page_num, page in enumerate(pdf.pages, start=1):
-                text = page.extract_text() or ""
+
+                text = page.extract_text()
+                if not text:
+                    continue  # skip blank pages
+
                 text = re.sub(r"\s+", " ", text)
 
                 for match in regex.finditer(text):
-                    m_start, m_end = match.span()
+                    start, end = match.span()
+                    extracted = text[start:]
 
-                    # Start extraction at the match
-                    sentence = text[m_start:]
-
-                    # Stop at the first period AFTER the match
-                    period_index = sentence.find(".")
+                    period_index = extracted.find(".")
                     if period_index != -1:
-                        sentence = sentence[:period_index + 1]
+                        extracted = extracted[:period_index + 1]
 
-                    yield f"Page {page_num}: {sentence.strip()}"
+                    yield f"Page {page_num}: {extracted.strip()}"
 
     except Exception as e:
         yield f"Error reading {file_path}: {e}"
 
 
-# -------------------------
-# Word file search
-# -------------------------
+# ----------------------------------
+# DOCX SEARCH
+# ----------------------------------
 def _search_docx(file_path, regex):
-    """Yield matching paragraphs or table cells from Word (.docx) files."""
     try:
         document = docx.Document(file_path)
-        # Search paragraphs
+
+        # PARAGRAPHS
         for i, para in enumerate(document.paragraphs, start=1):
             text = para.text.strip()
             if text and regex.search(text):
                 yield f"Paragraph {i}: {text}"
 
-        # Search inside tables
+        # TABLES
+        seen = set()  # de-duplicate merged table cells
         for t_idx, table in enumerate(document.tables, start=1):
             for r_idx, row in enumerate(table.rows, start=1):
                 for c_idx, cell in enumerate(row.cells, start=1):
                     text = cell.text.strip()
-                    if text and regex.search(text):
+                    if text and text not in seen and regex.search(text):
+                        seen.add(text)
                         yield f"Table {t_idx}, Row {r_idx}, Col {c_idx}: {text}"
+
     except Exception as e:
         yield f"Error reading {file_path}: {e}"
