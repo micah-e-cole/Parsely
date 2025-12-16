@@ -287,6 +287,8 @@ def launch_gui(root=None):
         TextSearchGUI(app)
         app.mainloop()
     else:
+        # Attach ttkbootstrap theme to existing Tk root (from splash)
+        style = ttk.Style("darkly")
         TextSearchGUI(root)
 
 

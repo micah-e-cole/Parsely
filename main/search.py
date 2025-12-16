@@ -40,8 +40,8 @@ def run(pattern, target, ignore_case=True, extension="", pdf_mode="text"):
         for item in path.rglob("*"):
             if regex.search(item.name):
                 # Return relative path from the searched folder
-                rel = item.relative_to(path)
-                yield str(rel)
+                # rel = item.relative_to(path)
+                yield str(item.resolve)      # yields absolute path of found item
 
         return
 

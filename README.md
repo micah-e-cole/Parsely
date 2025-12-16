@@ -34,19 +34,28 @@ Instead of relying on unreliable dashboard filters or manual scanning, users can
 
 ## Getting Started
 
-Right now, Parsely can be launched by running `py run.py` from within the root directory of the application.
+Right now, Parsely can be launched by running `py bootstrap.py` from within the root directory of the application once you have downloaded the project onto your device with an existing Python installation.
 
 ```parsely/
 |-- main/
+    |-- _pycache_
     |-- assets/
+    |-- __init__.py
+    |-- cli.py
     |-- gui.pyw
     |-- search.py
-    |-- cli.py
     |-- splash.py
-|-- run.py
+|-- build/
+    |-- Parsely
+    |-- Parsely_mac
+|-- dist/
+    |-- Parsely
+    |-- Parsely.app
+|-- main_entry.py
 |-- requirements.txt
 |-- README.md
-|-- launch_textsearch.bat
+|-- Parsely_mac.spec
+|-- Parsely.spec
 ```
 
 ---
