@@ -52,6 +52,7 @@ Right now, Parsely can be launched by running `py bootstrap.py` from within the 
     |-- Parsely
     |-- Parsely.app
 |-- main_entry.py
+|-- bootstrap.py
 |-- requirements.txt
 |-- README.md
 |-- Parsely_mac.spec
