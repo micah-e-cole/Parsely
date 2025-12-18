@@ -13,3 +13,16 @@ image.png
 pyproject.toml
 launch_textsearch.bat
 errors.txt
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Virtual environments
+venv/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
