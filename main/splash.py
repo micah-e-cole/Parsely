@@ -15,17 +15,14 @@ from PIL import Image, ImageTk
 
 
 def _resource_path(filename):
-    """
-    Normalize asset path for normal runs and PyInstaller bundles.
-    """
+    """Normalize asset path for normal runs and PyInstaller bundles."""
+        
     if getattr(sys, "frozen", False):
-        # Running inside a PyInstaller bundle
         base = Path(sys._MEIPASS)
     else:
-        base = Path(__file__).resolve().parent
+        base = Path(__file__).resolve().parent.parent
 
     return base / "assets" / filename
-
 
 def show_splash_then(callback, wait_thread=None, progress_queue=None, duration=3):
     """
