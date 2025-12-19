@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="main/assets/parsely.png" alt="Parsely Logo" width="160">
+  <img src="assets/parsely.png" alt="Parsely Logo" width="160">
 </p>
 
 <h1 align="center">Parsely</h1>
