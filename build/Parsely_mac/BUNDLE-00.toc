@@ -1,3 +1,0 @@
-([('Parsely',
-   '/Users/micahbraun/Desktop/Projects/Programming/Python/Automation/Parsely/dist/Parsely',
-   'EXECUTABLE')],)
