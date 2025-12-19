@@ -18,6 +18,8 @@ errors.txt
 build/
 dist/
 *.spec
+Parsely.exe
+Parsely.spec
 
 # Virtual environments
 venv/

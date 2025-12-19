@@ -1,9 +1,44 @@
 # search.py
+
+"""
+Internal search engine for Parsely GUI.
+Not intended for CLI or external invocation.
+"""
+
+from importlib.resources import path
 import re
 from pathlib import Path
 import openpyxl
 import pdfplumber
 import docx
+
+
+MAX_PATTERN_LENGTH = 200  # prevent CPU hogging
+MAX_FILES = 20_000
+
+def _safe_rglob(root):
+    count = 0
+    for item in root.rglob("*"):
+        if item.is_symlink():
+            continue
+
+        count += 1
+        if count > MAX_FILES:
+            raise RuntimeError("Search aborted: too many files")
+
+        yield item
+
+
+def _compile_regex(pattern, ignore_case=True, literal=False):
+    if len(pattern) > MAX_PATTERN_LENGTH:
+        raise ValueError("Search pattern too long")
+
+    flags = re.IGNORECASE if ignore_case else 0
+
+    if literal:
+        return re.compile(re.escape(pattern), flags)
+
+    return re.compile(pattern, flags)
 
 
 def run(pattern, target, ignore_case=True, extension="", pdf_mode="text"):
@@ -15,7 +50,8 @@ def run(pattern, target, ignore_case=True, extension="", pdf_mode="text"):
 
     # Normalize flags and paths (cross-OS safe)
     flags = re.IGNORECASE if ignore_case else 0
-    regex = re.compile(pattern, flags)
+    # regex = re.compile(pattern, flags)
+    regex = _compile_regex(pattern, ignore_case)
 
     # Expand "~" and resolve any relative path (macOS-safe)
     path = Path(target).expanduser().resolve()
@@ -37,12 +73,14 @@ def run(pattern, target, ignore_case=True, extension="", pdf_mode="text"):
     if path.is_dir():
 
         # Search both files and subfolders by *name only*
-        for item in path.rglob("*"):
-            if regex.search(item.name):
-                # Return relative path from the searched folder
-                # rel = item.relative_to(path)
-                yield str(item.resolve)      # yields absolute path of found item
+        for item in _safe_rglob(path):
 
+            # Apply extension filter ONLY if one was specified
+            if extension and item.is_file() and item.suffix.lower() != extension.lower():
+                continue
+
+            if regex.search(item.name):
+                yield str(item.relative_to(path))
         return
 
     yield f"Error: {target} is not a file or directory."

@@ -38,25 +38,13 @@ Right now, Parsely can be launched by running `py bootstrap.py` from within the 
 
 ```parsely/
 |-- main/
-    |-- _pycache_
-    |-- assets/
-    |-- __init__.py
-    |-- cli.py
     |-- gui.pyw
     |-- search.py
     |-- splash.py
-|-- build/
-    |-- Parsely
-    |-- Parsely_mac
-|-- dist/
-    |-- Parsely
-    |-- Parsely.app
+|-- assets/
 |-- main_entry.py
-|-- bootstrap.py
 |-- requirements.txt
 |-- README.md
-|-- Parsely_mac.spec
-|-- Parsely.spec
 ```
 
 ---
